@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 19,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Default (Ninja + mingw clang toolchain)",
+      "description": "Configure with Ninja generator and the mingw-llvm clang toolchain if available.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchain-mingw-clang.cmake"
+      }
+    }
+  ]
+}
