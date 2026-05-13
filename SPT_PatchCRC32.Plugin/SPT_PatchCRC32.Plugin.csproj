@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -105,19 +105,24 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\crc32_dll\tests\csharp\libcrc32_pclmulqdq.dll" Condition="Exists('..\crc32_dll\tests\csharp\libcrc32_pclmulqdq.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+  <!-- REMOVED the hardcoded .dll <None> block that was causing issues -->
 
+  <!-- UPDATED Target to copy ANY native library file (.dll or .so) -->
   <Target Name="CopyArtifacts" AfterTargets="Build">
     <ItemGroup>
       <Dlls Include="$(OutDir)SPT_PatchCRC32.Plugin.dll" />
-      <Dlls Include="$(ProjectDir)..\crc32_dll\tests\csharp\libcrc32_pclmulqdq.dll" Condition="Exists('$(ProjectDir)..\crc32_dll\tests\csharp\libcrc32_pclmulqdq.dll')" />
+      <!-- Find any .so or .dll file in the crc32_dll/tests/csharp folder -->
+      <NativeLibs Include="$(ProjectDir)..\crc32_dll\tests\csharp\libcrc32_pclmulqdq.*" />
     </ItemGroup>
-    <!-- create plugin folder that mirrors BepInEx plugin layout -->
+    
+    <!-- Create plugin folder -->
     <MakeDir Directories="$(ProjectDir)artifact\s8_SPT_PatchCRC32" />
+    
+    <!-- Copy the plugin DLL -->
     <Copy SourceFiles="@(Dlls)" DestinationFolder="$(ProjectDir)artifact\s8_SPT_PatchCRC32" />
+    
+    <!-- Copy the native library (if found) -->
+    <Copy SourceFiles="@(NativeLibs)" DestinationFolder="$(ProjectDir)artifact\s8_SPT_PatchCRC32" Condition="'@(NativeLibs)' != ''" />
   </Target>
+
 </Project>
